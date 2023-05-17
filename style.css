@@ -267,3 +267,22 @@ body {
 span {
     padding: 5px;
 }
+
+#bg {
+    background-color: var(--primary-color);
+    left: 1em;
+    padding: 0.5em;
+    top: 1em;
+    opacity: 0.8;
+    display: inline-block;
+    position: fixed;
+    height: 5em;
+    width: 5em;
+    border-radius: 50%;
+    font-size: 0.8em;
+    z-index: 100;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+}

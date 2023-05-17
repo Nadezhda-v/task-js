@@ -16,6 +16,8 @@ const tasks = [
     },
 ]
 
+let isDark = false;
+
 const createTaskItem = (taskId, taskText) => {
     const taskItem = document.createElement('div');
     taskItem.className = 'task-item';
@@ -59,12 +61,18 @@ const createTaskItem = (taskId, taskText) => {
     redactButton.className = 'task-item__redact-button default-button redact-button';
     redactButton.textContent = 'Редактировать';
 
+    if(isDark) {
+        taskItemText.style.color = '#ffffff';
+        deleteButton.style.border = '1px solid #ffffff';
+        redactButton.style.border = '1px solid #ffffff';
+        labelCheckbox.style.setProperty('--checkbox-border-color', '#ffffff');
+    }
+
     taskItemMainContent.append(checkboxForm, taskItemText);
     checkboxForm.append(inputCheckbox, labelCheckbox);
     taskItemMainContainer.append(taskItemButtons);
     taskItemButtons.append(redactButton, deleteButton);
 
-    console.log(taskItem)
     return taskItem;
 }
 
@@ -83,7 +91,8 @@ const createBlockWithError = (text) =>{
         return blockWithError;
     }
 
-const createTaskForm = document.querySelector('.create-task-block')
+const createTaskForm = document.querySelector('.create-task-block');
+
 createTaskForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -95,12 +104,12 @@ createTaskForm.addEventListener('submit', (event) => {
 
     if(newTaskInput === ''){
         const blockWithError = createBlockWithError('Название задачи не должно быть пустым');
-        createTaskForm.append(blockWithError)
+        createTaskForm.append(blockWithError);
     }
 
     if(taskRepeat){
         const blockWithError = createBlockWithError('Задача с таким названием уже существует');
-        createTaskForm.append(blockWithError)
+        createTaskForm.append(blockWithError);
     }
 
     if(newTaskInput && !taskRepeat) {
@@ -109,12 +118,12 @@ createTaskForm.addEventListener('submit', (event) => {
             text: newTaskInput,
         }
         tasks.push(newTask);
-        const taskItem = createTaskItem(newTask.id, newTask.text)
-        tasksList.append(taskItem)
+        const taskItem = createTaskItem(newTask.id, newTask.text);
+        tasksList.append(taskItem);
     }
 
     if(errorMessageBlockFromDom){
-        errorMessageBlockFromDom.remove()
+        errorMessageBlockFromDom.remove();
     }
 });
 
@@ -200,7 +209,6 @@ confirmButton.addEventListener('click', () => {
 
 const redactButton = document.querySelectorAll('.task-item__redact-button');
 
-
 document.addEventListener( 'click', (event) => {
     const { target } = event;
     const closestItemText = target.closest('.task-item__text');
@@ -210,3 +218,46 @@ document.addEventListener( 'click', (event) => {
         closestItemText.contentEditable = false;
     }
 })
+
+const buttonChangeTheme = document.querySelector('#bg');
+
+const changeTheme = ({
+    bodyBackground,
+    taskItemTextColor,
+    buttonBorder,
+    buttonLampColor,
+    checkboxColor,
+}) => {
+    document.body.style.background = bodyBackground;
+    document.querySelectorAll('.task-item__text').forEach((taskItem) => {
+        taskItem.style.color = taskItemTextColor;
+    });
+    document.querySelectorAll('button').forEach((button) => {
+        button.style.border = buttonBorder;
+    });
+    document.querySelector('#clrLamp').style.fill = buttonLampColor;
+    document.querySelectorAll('label').forEach((label) => {
+        label.style.setProperty('--checkbox-border-color', checkboxColor);
+    });
+}
+
+buttonChangeTheme.addEventListener('click', () => {
+        isDark = !isDark;
+        if (isDark) {
+            changeTheme({
+                bodyBackground: '#24292E',
+                taskItemTextColor: '#ffffff',
+                buttonBorder: '1px solid #ffffff',
+                buttonLampColor: 'rgb(255, 255, 144)',
+                checkboxColor: '#ffffff',
+            });
+        } else {
+            changeTheme({
+                bodyBackground: 'initial',
+                taskItemTextColor: 'initial',
+                buttonBorder: 'none',
+                buttonLampColor: 'initial',
+                checkboxColor: '#000000',
+            });
+        }
+});
